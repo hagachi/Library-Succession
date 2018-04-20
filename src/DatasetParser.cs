@@ -1,5 +1,5 @@
 using Landis.Core;
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 using Landis.Library.AgeOnlyCohorts;
 using System.Collections.Generic;
 
