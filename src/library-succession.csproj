@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Landis.Library.Succession</RootNamespace>
-    <AssemblyName>Landis.Library.Succession</AssemblyName>
+    <AssemblyName>Landis.Library.Succession-v5</AssemblyName>
     <AssemblyTitle>Input Parameters Library</AssemblyTitle>
     <AssemblyVersion>5.0</AssemblyVersion>
     <AssemblyDescription>Input Parameters Library for LANDIS-II</AssemblyDescription>
@@ -12,7 +12,7 @@
     <Product>Succession Library</Product>
     <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Library-Succession/blob/master/LICENSE</PackageLicenseUrl>
     <NeutralLanguage>English</NeutralLanguage>
-    <PackageId>Landis.Library.Succession</PackageId>
+    <PackageId>Landis.Library.Succession-v5</PackageId>
     <Authors />
     <Company />
     <Copyright></Copyright>
