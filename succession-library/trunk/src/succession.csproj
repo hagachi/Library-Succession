@@ -68,6 +68,7 @@
     <Compile Include="demographic-seeding\Algorithm.cs" />
     <Compile Include="demographic-seeding\IntPixel.cs" />
     <Compile Include="demographic-seeding\MapPaths.cs" />
+    <Compile Include="demographic-seeding\DispersalKernelParser.cs" />
     <Compile Include="demographic-seeding\ParameterParser.cs" />
     <Compile Include="demographic-seeding\Parameters.cs" />
     <Compile Include="demographic-seeding\ParsingUtils.cs" />
