@@ -1,7 +1,7 @@
 using Landis.Core;
 using Edu.Wisc.Forest.Flel.Util;
-using Landis.Library.LeafBiomassCohorts;
-//using Landis.Library.BiomassCohorts;
+//using Landis.Library.LeafBiomassCohorts;
+using Landis.Library.BiomassCohorts;
 using System.Text;
 using System;
 using System.Linq;
@@ -130,7 +130,7 @@ namespace Landis.Library.InitialCommunities
 
                     ages = BinAges(ages);
                     
-                    speciesCohortsList.Add(new SpeciesCohorts(species, age.Value.Actual, (float) biomass, (float) 0.0));
+                    speciesCohortsList.Add(new SpeciesCohorts(species, age.Value.Actual, (int) biomass));
                     
                     GetNextLine();
                 }
@@ -168,54 +168,60 @@ namespace Landis.Library.InitialCommunities
 
         public static InputValue<uint> ReadBiomass(StringReader reader)
         {
+            uint biomass;
             TextReader.SkipWhitespace(reader);
             //index = reader.Index;
 
             //  Read left parenthesis
             int nextChar = reader.Peek();
             if (nextChar == -1)
-                throw new InputValueException();  // Missing value
-            if (nextChar != '(')
-                throw MakeInputValueException(TextReader.ReadWord(reader),
-                                              "Value does not start with \"(\"");
-            
-            StringBuilder valueAsStr = new StringBuilder();
-            valueAsStr.Append((char)(reader.Read()));
-
-            //  Read whitespace between '(' and percentage
-            valueAsStr.Append(ReadWhitespace(reader));
-
-            //  Read percentage
-            string word = ReadWord(reader, ')');
-            if (word == "")
-                throw MakeInputValueException(valueAsStr.ToString(),
-                                              "No biomass after \"(\"");
-            valueAsStr.Append(word);
-            uint biomass;
-            try
             {
-                biomass = (uint) Int32.Parse(word); // Percentage.Parse(word);
+                //throw new InputValueException();  // Missing value
+                biomass = 0;
             }
-            catch (System.FormatException exc)
+            else
             {
-                throw MakeInputValueException(valueAsStr.ToString(),
-                                              exc.Message);
-            }
-            if (biomass < 0.0 || biomass > 100000)
-                throw MakeInputValueException(valueAsStr.ToString(),
-                                              string.Format("{0} is not between 0% and 100%", word));
+                if (nextChar != '(')
+                    throw MakeInputValueException(TextReader.ReadWord(reader),
+                                                  "Value does not start with \"(\"");
 
-            //  Read whitespace and ')'
-            valueAsStr.Append(ReadWhitespace(reader));
-            char? ch = TextReader.ReadChar(reader);
-            if (!ch.HasValue)
-                throw MakeInputValueException(valueAsStr.ToString(),
-                                              "Missing \")\"");
-            valueAsStr.Append(ch.Value);
-            if (ch != ')')
-                throw MakeInputValueException(valueAsStr.ToString(),
-                                              string.Format("Value ends with \"{0}\" instead of \")\"", ch));
-            
+                StringBuilder valueAsStr = new StringBuilder();
+                valueAsStr.Append((char)(reader.Read()));
+
+                //  Read whitespace between '(' and percentage
+                valueAsStr.Append(ReadWhitespace(reader));
+
+                //  Read percentage
+                string word = ReadWord(reader, ')');
+                if (word == "")
+                    throw MakeInputValueException(valueAsStr.ToString(),
+                                                  "No biomass after \"(\"");
+                valueAsStr.Append(word);
+
+                try
+                {
+                    biomass = (uint)Int32.Parse(word); // Percentage.Parse(word);
+                }
+                catch (System.FormatException exc)
+                {
+                    throw MakeInputValueException(valueAsStr.ToString(),
+                                                  exc.Message);
+                }
+                if (biomass < 0.0 || biomass > 100000)
+                    throw MakeInputValueException(valueAsStr.ToString(),
+                                                  string.Format("{0} is not between 0% and 100%", word));
+
+                //  Read whitespace and ')'
+                valueAsStr.Append(ReadWhitespace(reader));
+                char? ch = TextReader.ReadChar(reader);
+                if (!ch.HasValue)
+                    throw MakeInputValueException(valueAsStr.ToString(),
+                                                  "Missing \")\"");
+                valueAsStr.Append(ch.Value);
+                if (ch != ')')
+                    throw MakeInputValueException(valueAsStr.ToString(),
+                                                  string.Format("Value ends with \"{0}\" instead of \")\"", ch));
+            }
             Landis.Library.Succession.Model.Core.UI.WriteLine("Read in biomass value: {0}", biomass);
 
             return new InputValue<uint>(biomass, "Biomass gm-2"); 
