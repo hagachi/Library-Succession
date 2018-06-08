@@ -19,6 +19,9 @@ using Seed_Dispersal;
 using System.Reflection;
 using System.Collections.Generic;
 using System;
+using System.IO;
+using Edu.Wisc.Forest.Flel.Util;
+using System.Linq;
 
 namespace Landis.Library.Succession.DemographicSeeding
 {
@@ -97,12 +100,7 @@ namespace Landis.Library.Succession.DemographicSeeding
             seedlingEmergenceMaps = parameters.SeedlingEmergenceMaps;
 
             dispersalProbabilitiesFilename = parameters.DispersalProbabilitiesLog;
-            if (dispersalProbabilitiesFilename != null)
-                // Truncate DispersalProbabilitiesLog file and write header
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(dispersalProbabilitiesFilename, false))
-                {
-                    file.WriteLine("Timestep, Species, Distance, Probability");
-                }            
+         
 
             foreach (ISpecies species in Model.Core.Species)
             {
@@ -121,6 +119,9 @@ namespace Landis.Library.Succession.DemographicSeeding
                           seedingData.survival_probability[species.Index]);
                 CopyArray(speciesParameters.MaxSeedBiomass,
                           seedingData.max_seed_biomass[species.Index]);
+
+               
+            
             }
 
             foreach(Site site in Model.Core.Landscape.AllSites)
@@ -146,10 +147,127 @@ namespace Landis.Library.Succession.DemographicSeeding
                 }
 
             }
-            seedingData.Initialize();
-            WriteProbabilities();
-        }
+            // Read provided dispersal kernel files
+            List<string> fileNames = new List<string>();
+            string fileTemplate = parameters.DispersalProbabilitiesLog;
+            foreach (ISpecies species in Model.Core.Species)
+            {
+                string dispersalProbSpeciesFilename = MapPaths.ReplaceTemplateVars(fileTemplate, 0, species.Name);
+                if(File.Exists(dispersalProbSpeciesFilename))
+                {
+                    string firstLine;
+                    using (StreamReader reader = new StreamReader(dispersalProbSpeciesFilename))
+                    {
+                        firstLine = reader.ReadLine() ?? "";
+                    }
+                    List<string> firstLineList = new List<string>(firstLine.Split((char[])null, System.StringSplitOptions.RemoveEmptyEntries));
+                    if (firstLineList[0].Replace("\"", "").Replace("'", "") == "LandisData" && firstLineList[1].Replace("\"", "").Replace("'", "") == "DispersalKernel")
+                        fileNames.Add(dispersalProbSpeciesFilename);
+                    else
+                    {
+                        string msg = "File " + dispersalProbSpeciesFilename + " does not begin with LandisData  \"DispersalKernel\".";
+                        fileNames.Add("NA");
+                    }
+                }
+                else
+                {
+                    fileNames.Add("NA");
+                }
+            }
+            Dictionary<int, Dictionary<double, double>> dispersalKernels = InitializeFromFiles(fileNames);
 
+
+            // If any species not provided, calculate dispersal prob
+            foreach (ISpecies species in Model.Core.Species)
+            {
+                if (dispersalKernels[species.Index].Keys.Count() == 0)
+                {
+                    SpeciesParameters speciesParameters = parameters.SpeciesParameters[species.Index];
+                    if (dispersalProbabilitiesFilename != null)
+                    {                        
+                        // substitute species name into Filename
+                        string dispersalProbSpeciesFilename = MapPaths.ReplaceTemplateVars(dispersalProbabilitiesFilename, 0, species.Name);
+
+                        // Truncate DispersalProbabilitiesLog file and write header
+                        using (System.IO.StreamWriter file = new System.IO.StreamWriter(dispersalProbSpeciesFilename, false))
+                        {
+                            file.WriteLine("LandisData	\"DispersalKernel\"");
+                            file.WriteLine("");
+                            file.WriteLine(">> Comments:  Generated within LANDIS");
+                            if (parameters.Kernel == Dispersal_Model.DOUBLE_EXPONENTIAL)
+                            {
+                                file.WriteLine("LogMessage" + "\t\"" + parameters.Kernel.ToString() + ": Mean1=" + speciesParameters.DispersalMean1 + ", Mean2=" + speciesParameters.DispersalMean2 + ", Weight1=" + speciesParameters.DispersalWeight1 +", MaxSeeds="+ speciesParameters.MaxSeedsProduced.ToString() + ", Timestep=1, PixelSize=" + Model.Core.CellLength.ToString() +"\"");
+                            }
+                            else if (parameters.Kernel == Dispersal_Model.TWODT)
+                            {
+                                file.WriteLine("LogMessage" + "\t\"" + parameters.Kernel.ToString() + ": A=" + speciesParameters.DispersalMean1 + ", B=" + speciesParameters.DispersalMean2  + ", MaxSeeds=" + speciesParameters.MaxSeedsProduced.ToString() + ", Timestep=1, PixelSize=" + Model.Core.CellLength.ToString() + "\"");
+                            }
+                            file.WriteLine("");
+                            file.WriteLine("ProbabilityTable");
+                        }
+                    }
+                }
+            }            
+            seedingData.Initialize(dispersalKernels);
+            //TODO modify write function to create correct format - make writing file optional?
+            WriteProbabilities(dispersalKernels);
+        }
+        //---------------------------------------------------------------------
+        // populating the dispersal probability lookup table
+        public Dictionary<int, Dictionary<double, double>> InitializeFromFiles(List<string> fileNames)
+        {
+            Dictionary<int, Dictionary<double, double>> dispersalKernels = new Dictionary<int, Dictionary<double, double>>();
+            List<string> message = new List<string>();
+            int sppIndex = 0;
+            
+            //TODO
+            // Read LogMessage and write to Landis.log
+            foreach (string file in fileNames)
+            {
+                Dictionary<double, double> sppKernel = new Dictionary<double, double>();
+                if (file == "NA")
+                {
+                    message.Add("No dispersal kernel file for species " + sppIndex.ToString() + ".");
+                }
+                else
+                {
+                    // Read files, but limit to max window diagonal
+                    double max_dist = Model.Core.CellLength * Math.Sqrt(Model.Core.Landscape.Columns * Model.Core.Landscape.Columns + Model.Core.Landscape.Rows * Model.Core.Landscape.Rows);
+                    // Read the file and display it line by line.  
+                    string line;
+                    bool startTable = false;
+                    bool exceedMaxDist = false;
+                    System.IO.StreamReader textFile = new System.IO.StreamReader(file);
+                    while ((line = textFile.ReadLine()) != null)
+                    {
+                        if(startTable)
+                        {
+                            string[] words = line.Split(',');
+                            double dist = Double.Parse(words[0]);
+                            double prob = Double.Parse(words[1]);
+                            sppKernel.Add(dist, prob);
+                            if (dist > max_dist)
+                            {
+                                exceedMaxDist = true;
+                                break;
+                            }
+                        }
+                        if(line == "ProbabilityTable")
+                        {
+                            startTable = true;
+                        }
+                    }
+
+                    textFile.Close(); 
+                }
+                dispersalKernels.Add(sppIndex, sppKernel);
+                // TODO
+                // Message if exceedMaxDist is false - kernel may be too small
+
+                sppIndex++;
+            }
+            return dispersalKernels;
+        }
         //---------------------------------------------------------------------
 
         private void CopyArray<TItem>(TItem[] source,
@@ -174,7 +292,7 @@ namespace Landis.Library.Succession.DemographicSeeding
             {
                 SimulateOneTimestep();
                 WriteOutputMaps();
-                WriteProbabilities();
+                //WriteProbabilities();  // Right now probabilities will not vary by timestep, so no need to output multiple times.  File is written during initialization.
             }
             timeAtLastCall = Model.Core.CurrentTime;
 
@@ -200,26 +318,30 @@ namespace Landis.Library.Succession.DemographicSeeding
         }
 
         //---------------------------------------------------------------------
-        protected void WriteProbabilities()
+        protected void WriteProbabilities(Dictionary<int, Dictionary<double, double>> dispersalKernels)
         {
             if (dispersalProbabilitiesFilename == null) 
                 return;
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(dispersalProbabilitiesFilename, true))
+            foreach (ISpecies species in Model.Core.Species)
             {
-                foreach (ISpecies species in Model.Core.Species)
+                if (dispersalKernels[species.Index].Keys.Count() == 0)
                 {
-                    int s = species.Index;
-                    List<double> distances = new List<double>(seedingData.GetProbabilityDistances(s));
-                    distances.Sort();
-                    file.WriteLine("{0}, {1},,", Model.Core.CurrentTime, species.Name);
-                    foreach (double distance in distances)
+                    string dispersalProbSpeciesFilename = MapPaths.ReplaceTemplateVars(dispersalProbabilitiesFilename, 0, species.Name);
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(dispersalProbSpeciesFilename, true))
                     {
-                        file.WriteLine(",,{0},{1}", distance, seedingData.GetDispersalProbability(s, distance));
+                        int s = species.Index;
+                        List<double> distances = new List<double>(seedingData.GetProbabilityDistances(s));
+                        distances.Sort();
+                        //file.WriteLine("{0}, {1},,", Model.Core.CurrentTime, species.Name);
+                        foreach (double distance in distances)
+                        {
+                            file.WriteLine("{0},{1}", distance, seedingData.GetDispersalProbability(s, distance));
+                        }
                     }
                 }
             }
         }
-
+        //---------------------------------------------------------------------
         protected void SimulateOneTimestep()
         {
             if (isDebugEnabled)
