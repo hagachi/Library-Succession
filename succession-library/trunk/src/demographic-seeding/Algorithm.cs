@@ -245,7 +245,8 @@ namespace Landis.Library.Succession.DemographicSeeding
                             string[] words = line.Split(',');
                             double dist = Double.Parse(words[0]);
                             double prob = Double.Parse(words[1]);
-                            sppKernel.Add(dist, prob);
+                            double round_dist = Math.Round(dist, 8);
+                            sppKernel.Add(round_dist, prob);
                             if (dist > max_dist)
                             {
                                 exceedMaxDist = true;
