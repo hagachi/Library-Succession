@@ -1,31 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Landis.Library.Succession</RootNamespace>
-    <AssemblyName>Landis.Library.Succession-v5</AssemblyName>
-    <AssemblyTitle>Input Parameters Library</AssemblyTitle>
-    <AssemblyVersion>5.0</AssemblyVersion>
+    <AssemblyName>Landis.Library.Succession-v6</AssemblyName>
+    <AssemblyTitle>Landis.Library.Succession-v6</AssemblyTitle>
+    <AssemblyCompany>LANDIS-II Foundation</AssemblyCompany>
+    <AssemblyProduct>Landis.Library.Succession-v6</AssemblyProduct>
+    <AssemblyCopyright>LANDIS-II Foundation</AssemblyCopyright>        
+    <AssemblyVersion>6.0</AssemblyVersion>
     <AssemblyDescription>Input Parameters Library for LANDIS-II</AssemblyDescription>
-    <AssemblyCopyright>2014 University of Notre Dame</AssemblyCopyright>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Succession Library for LANDIS-II</Description>
-    <Product>Succession Library</Product>
-    <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Library-Succession/blob/master/LICENSE</PackageLicenseUrl>
-    <NeutralLanguage>English</NeutralLanguage>
-    <PackageId>Landis.Library.Succession-v5</PackageId>
-    <Authors />
-    <Company />
-    <Copyright></Copyright>
-    <PackageProjectUrl>https://sites.google.com/site/landismodel/home</PackageProjectUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Library-Succession</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Library-Succession/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
+    <NeutralLanguage>English</NeutralLanguage>
+    <Authors>LANDIS-II Foundation</Authors>
+    <Product>Succession Library</Product>
+    <Copyright>LANDIS-II Foundation</Copyright>
+    <Version>6.0</Version>
     <PackageTags>LANDIS-II;Landis;Library;Succession</PackageTags>
+    <Description>Succession Library for LANDIS-II</Description>
+    <PackageReleaseNotes>.NET Standard 2.0 update.</PackageReleaseNotes>
+    <FileVersion>7.0</FileVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Landis.Core" Version="1.0.0" />
-    <PackageReference Include="Landis.Library.AgeOnlyCohorts" Version="1.0.0" />
-    <PackageReference Include="Landis.SpatialModeling" Version="1.0.0" />
-    <PackageReference Include="Landis.Utilities" Version="1.0.0" />
+    <PackageReference Include="Landis.Core" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Landis.Library.AgeOnlyCohorts-v3">
+      <HintPath>lib\Landis.Library.AgeOnlyCohorts-v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Landis.Library.Cohorts-v2">
+      <HintPath>lib\Landis.Library.Cohorts-v2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>
