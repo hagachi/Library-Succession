@@ -1,102 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DE8FD469-F80C-4B11-9E55-F99D001E563F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Landis.Library.Succession</RootNamespace>
-    <AssemblyName>Landis.Library.Succession-v5</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <AssemblyName>Landis.Library.Succession-v6</AssemblyName>
+    <AssemblyTitle>Landis.Library.Succession-v6</AssemblyTitle>
+    <AssemblyCompany>LANDIS-II Foundation</AssemblyCompany>
+    <AssemblyProduct>Landis.Library.Succession-v6</AssemblyProduct>
+    <AssemblyCopyright>LANDIS-II Foundation</AssemblyCopyright>        
+    <AssemblyVersion>6.0</AssemblyVersion>
+    <AssemblyDescription>Input Parameters Library for LANDIS-II</AssemblyDescription>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/LANDIS-II-Foundation/Library-Succession</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/LANDIS-II-Foundation/Library-Succession/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.landis-ii.org</PackageProjectUrl>
+    <NeutralLanguage>English</NeutralLanguage>
+    <Authors>LANDIS-II Foundation</Authors>
+    <Product>Succession Library</Product>
+    <Copyright>LANDIS-II Foundation</Copyright>
+    <Version>6.0</Version>
+    <PackageTags>LANDIS-II;Landis;Library;Succession</PackageTags>
+    <Description>Succession Library for LANDIS-II</Description>
+    <PackageReleaseNotes>.NET Standard 2.0 update.</PackageReleaseNotes>
+    <FileVersion>7.0</FileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>c:\Program Files\LANDIS-II\6.0\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Edu.Wisc.Forest.Flel.Util">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+    <PackageReference Include="Landis.Core" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Landis.Library.AgeOnlyCohorts-v3">
+      <HintPath>lib\Landis.Library.AgeOnlyCohorts-v3.dll</HintPath>
     </Reference>
-    <Reference Include="Landis.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Landis.Library.AgeOnlyCohorts">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Landis.Library.Cohorts">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Landis.SpatialModeling">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="log4net">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+    <Reference Include="Landis.Library.Cohorts-v2">
+      <HintPath>lib\Landis.Library.Cohorts-v2.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CohortSiteVar.cs" />
-    <Compile Include="DisturbedSiteEnumerator.cs" />
-    <Compile Include="ExtensionBase.cs" />
-    <Compile Include="FormOfReproduction.cs" />
-    <Compile Include="IFormOfReproduction.cs" />
-    <Compile Include="InitCommPixel.cs" />
-    <Compile Include="Community.cs" />
-    <Compile Include="Dataset.cs" />
-    <Compile Include="DatasetParser.cs" />
-    <Compile Include="ICommunity.cs" />
-    <Compile Include="IDataset.cs" />
-    <Compile Include="IPlanting.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="NoDispersal.cs" />
-    <Compile Include="Planting.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="RelativeLocationWeighted.cs" />
-    <Compile Include="Reproduction.cs" />
-    <Compile Include="ReproductionDefaults.cs" />
-    <Compile Include="Seeding.cs" />
-    <Compile Include="SeedingAlgorithm.cs" />
-    <Compile Include="SeedingAlgorithms.cs" />
-    <Compile Include="SeedingAlgorithmsUtil.cs" />
-    <Compile Include="SiteVars.cs" />
-    <Compile Include="UniversalDispersal.cs" />
-    <Compile Include="WardSeedDispersal.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)\install-libs.cmd</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!--
-To modify your build process, add your task inside one of the targets below and uncomment it. Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>
