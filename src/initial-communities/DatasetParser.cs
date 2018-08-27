@@ -1,7 +1,6 @@
 using Landis.Core;
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 using Landis.Library.LeafBiomassCohorts;
-//using Landis.Library.BiomassCohorts;
 using System.Text;
 using System;
 using System.Linq;
