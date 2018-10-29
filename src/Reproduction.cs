@@ -1,4 +1,4 @@
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 using Landis.Core;
 using log4net;
 using System;
@@ -256,6 +256,15 @@ namespace Landis.Library.Succession
         {
             noEstablish[site] = true;
         }
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Re-enables establishment at a site for a list of species
+        /// </summary>
+        public static void EnableEstablishment(ActiveSite site)
+        {
+            noEstablish[site] = false;
+        }        
         //---------------------------------------------------------------------
 
         /// <summary>

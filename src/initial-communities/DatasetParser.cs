@@ -1,5 +1,5 @@
 using Landis.Core;
-using Edu.Wisc.Forest.Flel.Util;
+using Landis.Utilities;
 //using Landis.Library.LeafBiomassCohorts;
 using Landis.Library.BiomassCohorts;
 using System.Text;
@@ -102,14 +102,14 @@ namespace Landis.Library.InitialCommunities
                         speciesLineNumbers[species.Name] = LineNumber;
 
                     //  Read ages
-                    List<ushort> ages = new List<ushort>();
+                    Dictionary<ushort, uint> ageBio = new Dictionary<ushort, uint>();
                     TextReader.SkipWhitespace(currentLine);
                     while (currentLine.Peek() != -1) {
                         ReadValue(age, currentLine);
                         if (age.Value.Actual == 0)
                             throw new InputValueException(age.Value.String,
                                                           "Ages must be > 0.");
-                        if (ages.Contains(age.Value.Actual))
+                        if (ageBio.ContainsKey(age.Value.Actual))
                             throw new InputValueException(age.Value.String,
                                                           "The age {0} appears more than once.",
                                                           age.Value.String);
@@ -123,15 +123,29 @@ namespace Landis.Library.InitialCommunities
                         biomass = ReadBiomass(currentLine);
                         //ages.Add(age.Value.Actual);
                         TextReader.SkipWhitespace(currentLine);
+                        ageBio.Add(age.Value.Actual, biomass);
                     }
-                    //if (ages.Count == 0)
-                    //    //  Try reading age which will throw exception
+                    
+                    // Commented out to make input biomass optional
+                    //if (ageBio.Count == 0)
+                        //  Try reading age which will throw exception
                     //    ReadValue(age, currentLine);
 
-                    ages = BinAges(ages);
-                    
-                    speciesCohortsList.Add(new SpeciesCohorts(species, age.Value.Actual, (int) biomass));
-                    
+                    ageBio = BinAges(ageBio);
+
+
+                    foreach (ushort age_key in ageBio.Keys)
+                    {
+                        float initialWoodBiomass = ageBio[age_key];
+                        if (initialWoodBiomass < 0.0) // edited - value of 0 indicates no biomass was read in
+                            throw new InputValueException(speciesName.Value.String,
+                                                          "Cohort {0}, age {1} has negative biomass, line {2}",
+                                                          species.Name, age_key, lineNumber);
+
+                        speciesCohortsList.Add(new SpeciesCohorts(species, age_key, (int)Math.Round(initialWoodBiomass)));
+                    }
+
+
                     GetNextLine();
                 }
 
@@ -143,27 +157,43 @@ namespace Landis.Library.InitialCommunities
 
         //---------------------------------------------------------------------
 
-        private List<ushort> BinAges(List<ushort> ages)
+        private Dictionary<ushort, uint> BinAges(Dictionary<ushort, uint> ageBios)
         {
             if (successionTimestep <= 0)
-                return ages;
+                return ageBios;
 
-            ages.Sort();
-            for (int i = 0; i < ages.Count; i++) {
-                ushort age = ages[i];
-                if (age % successionTimestep != 0)
-                    ages[i] = (ushort) (((age / successionTimestep) + 1) * successionTimestep);
+            Dictionary<ushort, uint> newList = new Dictionary<ushort, uint>();
+
+            //ageBios.Sort();
+            //for (int i = 0; i < ages.Count; i++) {
+            //    ushort age = ages[i];
+            //    if (age % successionTimestep != 0)
+            //        ages[i] = (ushort) (((age / successionTimestep) + 1) * successionTimestep);
+            //}
+
+            foreach(ushort age in ageBios.Keys)
+            {
+                if (age % successionTimestep == 0)
+                    newList.Add(age, ageBios[age]);
+                else
+                {
+                    ushort new_age = (ushort)(((age / successionTimestep) + 1) * successionTimestep);
+                    if (newList.ContainsKey(new_age))
+                        newList[new_age] += ageBios[age];
+                    else
+                        newList.Add(new_age, ageBios[age]);
+            }
             }
 
             //    Remove duplicates, by going backwards through list from last
             //    item to the 2nd item, comparing each item with the one before
             //    it.
-            for (int i = ages.Count - 1; i >= 1; i--) {
-                if (ages[i] == ages[i-1])
-                    ages.RemoveAt(i);
-            }
+            //for (int i = ages.Count - 1; i >= 1; i--) {
+            //    if (ages[i] == ages[i-1])
+            //        ages.RemoveAt(i);
+            //}
 
-            return ages;
+            return newList; // ages;
         }
 
         public static InputValue<uint> ReadBiomass(StringReader reader)
@@ -209,7 +239,7 @@ namespace Landis.Library.InitialCommunities
                 }
                 if (biomass < 0.0 || biomass > 100000)
                     throw MakeInputValueException(valueAsStr.ToString(),
-                                                  string.Format("{0} is not between 0% and 100%", word));
+                                                  string.Format("{0} is not between 0 and 100000", word));
 
                 //  Read whitespace and ')'
                 valueAsStr.Append(ReadWhitespace(reader));
@@ -222,7 +252,7 @@ namespace Landis.Library.InitialCommunities
                     throw MakeInputValueException(valueAsStr.ToString(),
                                                   string.Format("Value ends with \"{0}\" instead of \")\"", ch));
             }
-            Landis.Library.Succession.Model.Core.UI.WriteLine("Read in biomass value: {0}", biomass);
+            //Landis.Library.Succession.Model.Core.UI.WriteLine("Read in biomass value: {0}", biomass);
 
             return new InputValue<uint>(biomass, "Biomass gm-2"); 
         }

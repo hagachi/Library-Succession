@@ -1,6 +1,6 @@
 //using Wisc.Flel.GeospatialModeling.RasterIO;
 using Landis.SpatialModeling;
-using Landis.SpatialModeling.CoreServices;
+//using Landis.SpatialModeling.CoreServices;
 
 namespace Landis.Library.InitialCommunities
 {

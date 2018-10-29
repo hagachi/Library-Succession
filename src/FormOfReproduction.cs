@@ -85,6 +85,7 @@ namespace Landis.Library.Succession
                     }
                 }
             }
+            selectedSpecies[site].SetAll(false);
 
             return success;
         }
