@@ -1,7 +1,6 @@
 using Landis.Utilities;
 using Landis.Library.InitialCommunities;
 using Landis.Core;
-//using Landis.Library.AgeOnlyCohorts;
 
 using log4net;
 using System;
@@ -63,8 +62,7 @@ namespace Landis.Library.Succession
         /// Initializes the instance and its associated site variables.
         /// </summary>
         protected void Initialize(ICore modelCore,
-                                  SeedingAlgorithms seedAlg)//,
-                                  //Reproduction.Delegates.AddNewCohort addNewCohort)
+                                  SeedingAlgorithms seedAlg)
         {
             Model.Core = modelCore;
             SiteVars.Initialize();
