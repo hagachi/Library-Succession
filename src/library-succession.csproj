@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Landis.Library.Succession</RootNamespace>
-    <AssemblyName>Landis.Library.Succession-v6</AssemblyName>
-    <AssemblyTitle>Landis.Library.Succession-v6</AssemblyTitle>
+    <AssemblyName>Landis.Library.Succession-v7</AssemblyName>
+    <AssemblyTitle>Landis.Library.Succession-v7</AssemblyTitle>
     <AssemblyCompany>LANDIS-II Foundation</AssemblyCompany>
     <AssemblyProduct>Landis.Library.Succession-v6</AssemblyProduct>
     <AssemblyCopyright>LANDIS-II Foundation</AssemblyCopyright>        
-    <AssemblyVersion>6.0</AssemblyVersion>
+    <AssemblyVersion>7.0</AssemblyVersion>
     <AssemblyDescription>Input Parameters Library for LANDIS-II</AssemblyDescription>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -24,7 +24,7 @@
     <PackageReleaseNotes>.NET Standard 2.0 update.</PackageReleaseNotes>
     <FileVersion>7.0</FileVersion>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Landis.Core" Version="2.0.0" />
   </ItemGroup>
@@ -36,6 +36,6 @@
     <Reference Include="Landis.Library.Cohorts-v2">
       <HintPath>lib\Landis.Library.Cohorts-v2.dll</HintPath>
     </Reference>
-  </ItemGroup>
+    </ItemGroup>
   
 </Project>
