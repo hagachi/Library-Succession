@@ -18,11 +18,11 @@
     <Authors>LANDIS-II Foundation</Authors>
     <Product>Succession Library</Product>
     <Copyright>LANDIS-II Foundation</Copyright>
-    <Version>6.0</Version>
+    <Version>6.0.1</Version>
     <PackageTags>LANDIS-II;Landis;Library;Succession</PackageTags>
     <Description>Succession Library for LANDIS-II</Description>
     <PackageReleaseNotes>.NET Standard 2.0 update.</PackageReleaseNotes>
-    <FileVersion>7.0</FileVersion>
+    <FileVersion>6.0.1</FileVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
