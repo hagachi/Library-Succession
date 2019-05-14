@@ -1,5 +1,4 @@
 using Landis.Utilities;
-using Landis.Library.InitialCommunities;
 using Landis.Core;
 
 using log4net;
@@ -62,8 +61,7 @@ namespace Landis.Library.Succession
         /// Initializes the instance and its associated site variables.
         /// </summary>
         protected void Initialize(ICore modelCore,
-                                  SeedingAlgorithms seedAlg)//,
-                                  //Reproduction.Delegates.AddNewCohort addNewCohort)
+                                  SeedingAlgorithms seedAlg)
         {
             Model.Core = modelCore;
             SiteVars.Initialize();
@@ -79,43 +77,12 @@ namespace Landis.Library.Succession
 
         //---------------------------------------------------------------------
 
-        public override void InitializeSites(string initialCommunities,
-                                             string initialCommunitiesMap,
-                                             ICore modelCore)
-        {
-            Model.Core.UI.WriteLine("   Loading initial communities from file \"{0}\" ...", initialCommunities);
-            InitialCommunities.DatasetParser parser = new InitialCommunities.DatasetParser(Timestep, Model.Core.Species);
-            InitialCommunities.IDataset communities = Landis.Data.Load<InitialCommunities.IDataset>(initialCommunities, parser);
-
-            Model.Core.UI.WriteLine("   Reading initial communities map \"{0}\" ...", initialCommunitiesMap);
-            IInputRaster<uintPixel> map;
-            map = Model.Core.OpenRaster<uintPixel>(initialCommunitiesMap);
-            using (map)
-            {
-                uintPixel pixel = map.BufferPixel;
-                foreach (Site site in Model.Core.Landscape.AllSites)
-                {
-                    map.ReadBufferPixel();
-                    uint mapCode = pixel.MapCode.Value;
-                    if (!site.IsActive)
-                        continue;
-
-                    //if (!modelCore.Ecoregion[site].Active)
-                    //    continue;
-
-                    //modelCore.Log.WriteLine("ecoregion = {0}.", modelCore.Ecoregion[site]);
-
-                    ActiveSite activeSite = (ActiveSite) site;
-                    ICommunity community = communities.Find(mapCode);
-                    if (community == null)
-                    {
-                        throw new ApplicationException(string.Format("Unknown map code for initial community: {0}", mapCode));
-                    }
-
-                    InitializeSite(activeSite, community);
-                }
-            }
-        }
+        //public override void InitializeSites(string initialCommunities,
+        //                                     string initialCommunitiesMap,
+        //                                     ICore modelCore)
+        //{
+        //    
+        //}
 
         //---------------------------------------------------------------------
 
@@ -123,8 +90,7 @@ namespace Landis.Library.Succession
         /// Initializes an active site's cohorts using a specific initial
         /// community.
         /// </summary>
-        protected abstract void InitializeSite(ActiveSite site,
-                                               ICommunity initialCommunity);
+        protected abstract void InitializeSite(ActiveSite site);
 
         //---------------------------------------------------------------------
 
