@@ -91,5 +91,16 @@ namespace Landis.Library.Succession
         }
 
         //---------------------------------------------------------------------
+        /// <summary>
+        /// The number of seeds produced on a site using the Density Succession method.
+        /// </summary>
+        public static double DensitySeeds(ISpecies species, ActiveSite site)
+        {
+            double densitySeeds = 0;
+
+            return densitySeeds;
+        }
+
+        //---------------------------------------------------------------------
     }
 }

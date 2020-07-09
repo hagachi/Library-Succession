@@ -21,7 +21,7 @@ namespace Landis.Library.Succession
             /// A method to add new young cohort for a particular species at a
             /// site.
             /// </summary>
-            public delegate void AddNewCohort(ISpecies species, ActiveSite site, string reproductionType, double propBiomass);
+            public delegate void AddNewCohort(ISpecies species, ActiveSite site, string reproductionType, double propBiomass = 1.0);
 
             //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -66,6 +66,11 @@ namespace Landis.Library.Succession
             /// </summary>
             public delegate double MatureFolMass(ISpecies species, ActiveSite site);
 
+            /// <summary>
+            /// A method for determining the seeds produced at a site for a given species using the Density Succession method.
+            /// </summary>
+            public delegate double DensitySeeds(ISpecies species, ActiveSite site);
+
 
         }
 
@@ -89,6 +94,7 @@ namespace Landis.Library.Succession
         public static Delegates.MatureBiomass matureBiomass = ReproductionDefaults.MatureBiomass;
         public static Delegates.ActiveBiomass activeBiomass = ReproductionDefaults.ActiveBiomass;
         public static Delegates.MatureFolMass folMass = ReproductionDefaults.MatureFolMass;
+        public static Delegates.DensitySeeds densitySeeds = ReproductionDefaults.DensitySeeds;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly bool isDebugEnabled = log.IsDebugEnabled;
@@ -232,6 +238,20 @@ namespace Landis.Library.Succession
             {
                 Require.ArgumentNotNull(value);
                 folMass = value;
+            }
+        }        
+        //---------------------------------------------------------------------
+        public static Delegates.DensitySeeds DensitySeeds
+        {
+            get
+            {
+                return densitySeeds;
+            }
+
+            set
+            {
+                Require.ArgumentNotNull(value);
+                densitySeeds = value;
             }
         }
         //---------------------------------------------------------------------

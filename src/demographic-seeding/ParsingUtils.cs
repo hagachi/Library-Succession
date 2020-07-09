@@ -37,7 +37,9 @@ namespace Landis.Library.Succession.DemographicSeeding
                 return Seed_Dispersal.Seed_Model.UNIFORM;
             else if (word == "Biomass")
                 return Seed_Dispersal.Seed_Model.BIOMASS;
-            throw new System.FormatException("Valid production models: Fixed, Uniform, Biomass");
+            else if (word == "Density")
+                return Seed_Dispersal.Seed_Model.DENSITY;
+            throw new System.FormatException("Valid production models: Fixed, Uniform, Biomass, Density");
         }
 
         //---------------------------------------------------------------------

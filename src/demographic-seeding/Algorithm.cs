@@ -118,9 +118,7 @@ namespace Landis.Library.Succession.DemographicSeeding
                 CopyArray(speciesParameters.SurvivalProbabilities,
                           seedingData.survival_probability[species.Index]);
                 CopyArray(speciesParameters.MaxSeedBiomass,
-                          seedingData.max_seed_biomass[species.Index]);
-
-               
+                          seedingData.max_seed_biomass[species.Index]);              
             
             }
 
@@ -142,7 +140,7 @@ namespace Landis.Library.Succession.DemographicSeeding
                         seedingData.emergence_probability[species.Index][x][y] = Reproduction.EstablishmentProbability(species, (ActiveSite)site);
                         seedingData.mature_biomass[species.Index][x][y] = Reproduction.ActiveBiomass(species, (ActiveSite)site);
                         seedingData.fol_mass[species.Index][x][y] = Reproduction.MatureFolMass(species, (ActiveSite)site);
-                        
+                        seedingData.density_seeds[species.Index][x][y] = Reproduction.DensitySeeds(species, (ActiveSite)site);
                     }
                 }
 
@@ -367,6 +365,10 @@ namespace Landis.Library.Succession.DemographicSeeding
                     {
                         //seedingData.mature_biomass[s][x][y] = Reproduction.ActiveBiomass(species, site);
                         seedingData.fol_mass[s][x][y] = Reproduction.MatureFolMass(species, site);
+                    }
+                    else if (seedingData.seed_model == Seed_Model.DENSITY)
+                    {
+                        seedingData.density_seeds[s][x][y] = Reproduction.DensitySeeds(species, site);
                     }
                 }
             }
