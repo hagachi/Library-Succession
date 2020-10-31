@@ -29,8 +29,13 @@ namespace Landis.Library.Succession
         {
             for (int i = 0; i < Model.Core.Species.Count; i++) {
                 ISpecies species = Model.Core.Species[i];
-                if (seedingAlgorithm(species, site)) {
-                    Reproduction.AddNewCohort(species, site, "seed");
+                bool isSeed;
+                string estLoc;
+                (isSeed, estLoc) = seedingAlgorithm(species, site);
+                //if (seedingAlgorithm(species, site))
+                if (isSeed)
+                {
+                    Reproduction.AddNewCohort(species, site, "seed", estLoc);
                     if (isDebugEnabled)
                         log.DebugFormat("site {0}: seeded {1}",
                                         site.Location, species.Name);

@@ -18,31 +18,37 @@ namespace Landis.Library.Succession
 
         //---------------------------------------------------------------------
 
-        public static bool Algorithm(ISpecies   species,
-                                     ActiveSite site)
+        //public static bool Algorithm(ISpecies   species,
+        public static (bool, string) Algorithm(ISpecies species,
+                                               ActiveSite site)
         {
             if (species.EffectiveSeedDist == Universal)
                 return UniversalDispersal.Algorithm(species, site);
 
-            if (! Reproduction.SufficientResources(species, site)) {
+            bool isSeed;
+            string estLoc;
+            (isSeed, estLoc) = Reproduction.SufficientResources(species, site);
+            //if (! Reproduction.SufficientResources(species, site)) {
+            if (!isSeed) {
                 if (isDebugEnabled)
                     log.DebugFormat("site {0}: {1} not seeded: insufficient light",
                                     site.Location, species.Name);
-                return false;
+                //return false;
+                return (false, "failed"); // 2020.10.30 Chihiro
             }
 
             if (! Reproduction.Establish(species, site)) {
                 if (isDebugEnabled)
                     log.DebugFormat("site {0}: {1} not seeded: cannot establish",
                                     site.Location, species.Name);
-                return false;
+                return (false, "failed"); // 2020.10.30 Chihiro
             }
 
             if (Reproduction.MaturePresent(species, site)) {
                 if (isDebugEnabled)
                     log.DebugFormat("site {0}: {1} seeded on site",
                                     site.Location, species.Name);
-                return true;
+                return (true, estLoc); // 2020.10.30 Chihiro
             }
 
             if (isDebugEnabled)
@@ -59,8 +65,8 @@ namespace Landis.Library.Succession
                 double MaxD = (double) species.MaxSeedDist;
                     
                 if(distance > MaxD + ((double) Model.Core.CellLength / 2.0 * 1.414)) 
-                    return false;  //Check no further
-                    
+                    return (false, "failed");  //Check no further  // 2020.10.30 Chihiro
+
                 double dispersalProb = GetDispersalProbability(EffD, MaxD, distance);
 
                 //First check the Southeast quadrant:
@@ -69,7 +75,7 @@ namespace Landis.Library.Succession
                     Site neighbor = site.GetNeighbor(reloc.Location);
                     if (neighbor != null && neighbor.IsActive)
                         if (Reproduction.MaturePresent(species, (ActiveSite) neighbor)) 
-                            return true;
+                            return (true, estLoc); // 2020.10.30 Chihiro
                 }                              
                 
                 //Next, check all other quadrants:        
@@ -79,17 +85,17 @@ namespace Landis.Library.Succession
                     if(rCol == 0)
                         neighbor = site.GetNeighbor(new RelativeLocation(0, rRow));
                     if (neighbor != null && neighbor.IsActive)
-                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor)) 
-                            return true;
+                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor))
+                            return (true, estLoc); // 2020.10.30 Chihiro
                 }
 
                 if (dispersalProb > Model.Core.GenerateUniform())
                 {
                     Site neighbor = site.GetNeighbor(new RelativeLocation(rRow * -1, rCol * -1));
                     if (neighbor != null && neighbor.IsActive)
-                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor)) 
-                            return true;
-                 }
+                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor))
+                            return (true, estLoc); // 2020.10.30 Chihiro
+                }
 
                 if (dispersalProb > Model.Core.GenerateUniform())
                 {
@@ -97,13 +103,13 @@ namespace Landis.Library.Succession
                     if(rCol == 0)
                         neighbor = site.GetNeighbor(new RelativeLocation(0, rRow * -1));
                     if (neighbor != null && neighbor.IsActive)
-                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor)) 
-                            return true;
+                        if (Reproduction.MaturePresent(species, (ActiveSite) neighbor))
+                            return (true, estLoc); // 2020.10.30 Chihiro
                 }
 
             }  // end foreach relativelocation
 
-            return false;
+            return (false, "failed"); // 2020.10.30 Chihiro
         }
         
         private static double GetDispersalProbability(double EffD, double MaxD, double distance)

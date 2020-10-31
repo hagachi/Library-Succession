@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Landis.Library.Succession</RootNamespace>
-    <AssemblyName>Landis.Library.Succession-v8</AssemblyName>
-    <AssemblyTitle>Landis.Library.Succession-v8</AssemblyTitle>
+    <AssemblyName>Landis.Library.Succession-v8_ftestloc</AssemblyName>
+    <AssemblyTitle>Landis.Library.Succession-v8_ftestloc</AssemblyTitle>
     <AssemblyCompany>LANDIS-II Foundation</AssemblyCompany>
-    <AssemblyProduct>Landis.Library.Succession-v8</AssemblyProduct>
+    <AssemblyProduct>Landis.Library.Succession-v8_ftestloc</AssemblyProduct>
     <AssemblyCopyright>LANDIS-II Foundation</AssemblyCopyright>        
-    <AssemblyVersion>8.0</AssemblyVersion>
+    <AssemblyVersion>8.0.1</AssemblyVersion>
     <AssemblyDescription>Input Parameters Library for LANDIS-II</AssemblyDescription>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -18,11 +18,11 @@
     <Authors>LANDIS-II Foundation</Authors>
     <Product>Succession Library</Product>
     <Copyright>LANDIS-II Foundation</Copyright>
-    <Version>8.0</Version>
+    <Version>8.0.1</Version>
     <PackageTags>LANDIS-II;Landis;Library;Succession</PackageTags>
     <Description>Succession Library for LANDIS-II</Description>
     <PackageReleaseNotes>.NET Standard 2.0 update.</PackageReleaseNotes>
-    <FileVersion>8.0</FileVersion>
+    <FileVersion>8.0_ftestloc</FileVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 

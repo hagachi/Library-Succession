@@ -8,6 +8,8 @@ namespace Landis.Library.Succession
     /// <param name="species"></param>
     /// <param name="site">Site that may be seeded.</param>
     /// <returns>true if the species seeds the site.</returns>
-    public delegate bool SeedingAlgorithm(ISpecies   species,
-                                          ActiveSite site);
+    public delegate (bool, string) SeedingAlgorithm(ISpecies species,
+                                                    ActiveSite site);
+    //public delegate bool SeedingAlgorithm(ISpecies   species,
+    //                                      ActiveSite site);
 }

@@ -21,7 +21,7 @@ namespace Landis.Library.Succession
             /// A method to add new young cohort for a particular species at a
             /// site.
             /// </summary>
-            public delegate void AddNewCohort(ISpecies species, ActiveSite site, string reproductionType);
+            public delegate void AddNewCohort(ISpecies species, ActiveSite site, string reproductionType, string establishedLoc);
 
             //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -29,7 +29,8 @@ namespace Landis.Library.Succession
             /// A method to determine if there is sufficient light at a site for
             /// a species to reproduce.
             /// </summary>
-            public delegate bool SufficientResources(ISpecies   species, ActiveSite site);
+            // public delegate bool SufficientResources(ISpecies   species, ActiveSite site);
+            public delegate (bool, string) SufficientResources(ISpecies species, ActiveSite site);
 
             /// <summary>
             /// A method to determine if a species can establish given the establishment probabilities.
@@ -290,15 +291,18 @@ namespace Landis.Library.Succession
             //}
 
             bool sufficientLight;
+            string establishedLoc; // 2020.10.30 Chihiro
 
             bool serotinyOccurred = false;
             if (! plantingOccurred) {
                 for (int index = 0; index < speciesDataset.Count; ++index) {
                     if (serotiny[site].Get(index)) {
                         ISpecies species = speciesDataset[index];
-                        sufficientLight = SufficientResources(species, site);
+                        // 2020.10.30 Chihiro
+                        (sufficientLight, establishedLoc) = SufficientResources(species, site);
+                        //sufficientLight = SufficientResources(species, site);
                         if (sufficientLight && Establish(species, site)) {
-                            AddNewCohort(species, site, "serotiny");
+                            AddNewCohort(species, site, "serotiny", "surface");
                             serotinyOccurred = true;
                             if (isDebugEnabled)
                                 log.DebugFormat("site {0}: {1} post-fire regenerated",
@@ -321,10 +325,12 @@ namespace Landis.Library.Succession
                 for (int index = 0; index < speciesDataset.Count; ++index) {
                     if (resprout[site].Get(index)) {
                         ISpecies species = speciesDataset[index];
-                        sufficientLight = SufficientResources(species, site);
+                        // 2020.10.30 Chihiro
+                        (sufficientLight, establishedLoc) = SufficientResources(species, site);
+                        //sufficientLight = SufficientResources(species, site);
                         if (sufficientLight &&
                                 (Model.Core.GenerateUniform() < species.VegReprodProb)) {
-                            AddNewCohort(species, site, "resprout");
+                            AddNewCohort(species, site, "resprout", "surface");
                             speciesResprouted = true;
                             if (isDebugEnabled)
                                 log.DebugFormat("site {0}: {1} resprouted",

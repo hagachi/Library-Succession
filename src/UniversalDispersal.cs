@@ -9,11 +9,17 @@ namespace Landis.Library.Succession
     /// </summary>
     public static class UniversalDispersal
     {
-        public static bool Algorithm(ISpecies   species,
-                                     ActiveSite site)
+        public static (bool, string) Algorithm(ISpecies   species,
+                                               ActiveSite site)
         {
-            return Reproduction.SufficientResources(species, site) &&
-                   Reproduction.Establish(species, site);
+            // 2020.10.30 Chihiro
+            bool isSeed;
+            string estLoc;
+            (isSeed, estLoc) = Reproduction.SufficientResources(species, site);
+            return (isSeed && Reproduction.Establish(species, site),
+                    estLoc);
+            //return Reproduction.SufficientResources(species, site) &&
+            //       Reproduction.Establish(species, site);
         }
     }
 }
